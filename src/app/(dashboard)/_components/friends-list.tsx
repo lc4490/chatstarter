@@ -19,12 +19,7 @@ const useTestUsers = () => {
 };
 
 export function PendingFriendsList() {
-  const friends = useQuery(
-    api.functions.friend.listPending,
-    {},
-    { requireAuth: true }
-  );
-
+  const friends = useQuery(api.functions.friend.listPending);
   const updateStatus = useMutation(api.functions.friend.updateStatus);
 
   return (
