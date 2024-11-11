@@ -3,6 +3,7 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -19,6 +20,7 @@ import Link from "next/link";
 import { CreateChannel } from "./create-channel";
 import { TrashIcon } from "lucide-react";
 import { toast } from "sonner";
+import { Voice } from "./voice";
 
 export function ServerSidebar({ id }: { id: Id<"servers"> }) {
   const pathname = usePathname();
@@ -75,6 +77,17 @@ export function ServerSidebar({ id }: { id: Id<"servers"> }) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <Voice serverId={id} />
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarFooter>
     </Sidebar>
   );
 }
