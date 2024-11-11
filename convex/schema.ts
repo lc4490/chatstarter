@@ -61,6 +61,8 @@ export default defineSchema({
     content: v.string(),
     dmOrChannelId: v.union(v.id("directMessages"), v.id("channels")),
     attachment: v.optional(v.id("_storage")),
+    deleted: v.optional(v.boolean()),
+    deletedReason: v.optional(v.string()),
   }).index("by_dmOrChannelId", ["dmOrChannelId"]),
   typingIndicators: defineTable({
     user: v.id("users"),

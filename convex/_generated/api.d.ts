@@ -20,6 +20,7 @@ import type * as functions_helpers from "../functions/helpers.js";
 import type * as functions_invite from "../functions/invite.js";
 import type * as functions_livekit from "../functions/livekit.js";
 import type * as functions_message from "../functions/message.js";
+import type * as functions_moderation from "../functions/moderation.js";
 import type * as functions_server from "../functions/server.js";
 import type * as functions_storage from "../functions/storage.js";
 import type * as functions_typing from "../functions/typing.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   "functions/invite": typeof functions_invite;
   "functions/livekit": typeof functions_livekit;
   "functions/message": typeof functions_message;
+  "functions/moderation": typeof functions_moderation;
   "functions/server": typeof functions_server;
   "functions/storage": typeof functions_storage;
   "functions/typing": typeof functions_typing;

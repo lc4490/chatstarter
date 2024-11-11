@@ -5,7 +5,7 @@ import {
   authenticatedMutation,
   authenticatedQuery,
 } from "./helpers";
-import { internal } from "../_generated/api";
+import { api, internal } from "../_generated/api";
 
 export const list = authenticatedQuery({
   args: {
@@ -43,7 +43,7 @@ export const create = authenticatedMutation({
   },
   handler: async (ctx, { content, attachment, dmOrChannelId }) => {
     await assertChannelMember(ctx, dmOrChannelId);
-    await ctx.db.insert("messages", {
+    const messageId = await ctx.db.insert("messages", {
       content,
       attachment,
       dmOrChannelId,
@@ -52,6 +52,9 @@ export const create = authenticatedMutation({
     await ctx.scheduler.runAfter(0, internal.functions.typing.remove, {
       dmOrChannelId,
       user: ctx.user._id,
+    });
+    await ctx.scheduler.runAfter(0, internal.functions.moderation.run, {
+      id: messageId,
     });
   },
 });

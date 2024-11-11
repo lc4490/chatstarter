@@ -65,15 +65,28 @@ function MessageItem({ message }: { message: Message }) {
         <p className="text-xs text-muted-foreground">
           {message.sender?.username ?? "Deleted User"}
         </p>
-        <p className="text-sm">{message.content}</p>
-        {message.attachment && (
-          <Image
-            src={message.attachment}
-            alt="attachment"
-            width={300}
-            height={300}
-            className="rounded border overflow-hidden"
-          />
+        {message.deleted ? (
+          <>
+            <p className="text-sm text-destructive">
+              This message was deleted.
+              {message.deletedReason && (
+                <span> Reason: {message.deletedReason}</span>
+              )}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm">{message.content}</p>
+            {message.attachment && (
+              <Image
+                src={message.attachment}
+                alt="attachment"
+                width={300}
+                height={300}
+                className="rounded border overflow-hidden"
+              />
+            )}
+          </>
         )}
       </div>
       <MessageActions message={message} />
@@ -111,6 +124,7 @@ function MessageInput({ id }: { id: Id<"directMessages" | "channels"> }) {
   const sendMessage = useMutation(api.functions.message.create);
   const sendTypingIndicator = useMutation(api.functions.typing.upsert);
   const imageUpload = useImageUpload();
+  const removeAttachment = useMutation(api.functions.storage.remove);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -147,6 +161,14 @@ function MessageInput({ id }: { id: Id<"directMessages" | "channels"> }) {
             <ImagePreview
               url={imageUpload.previewUrl}
               isUploading={imageUpload.isUploading}
+              onDelete={() => {
+                if (imageUpload.storageId) {
+                  removeAttachment({
+                    storageId: imageUpload.storageId,
+                  });
+                }
+                imageUpload.reset();
+              }}
             />
           )}
           <Input
@@ -173,18 +195,30 @@ function MessageInput({ id }: { id: Id<"directMessages" | "channels"> }) {
 function ImagePreview({
   url,
   isUploading,
+  onDelete,
 }: {
   url: string;
   isUploading: boolean;
+  onDelete: () => void;
 }) {
   return (
-    <div className="relative size-40 rounded border overflow-hidden">
+    <div className="relative size-40 rounded border overflow-hidden group">
       <Image src={url} alt="attacument" width={300} height={300} />
       {isUploading && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/50">
           <LoaderIcon className="animate-spin size-8" />
         </div>
       )}
+      <Button
+        type="button"
+        className="absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity"
+        variant="destructive"
+        size="icon"
+        onClick={onDelete}
+      >
+        <TrashIcon />
+        <span className="sr-only">Delete</span>
+      </Button>
     </div>
   );
 }
