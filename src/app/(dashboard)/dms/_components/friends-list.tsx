@@ -1,5 +1,7 @@
+"use client";
+
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CheckIcon, MessageCircleIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
