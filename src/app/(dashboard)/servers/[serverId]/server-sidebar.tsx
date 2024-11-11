@@ -1,5 +1,3 @@
-import { usePathname, useRouter } from "next/navigation";
-import { Id } from "../../../../../convex/_generated/dataModel";
 import {
   Sidebar,
   SidebarContent,
@@ -12,14 +10,15 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
 } from "@/components/ui/sidebar";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
-import Link from "next/link";
-import { CreateChannel } from "./create-channel";
 import { TrashIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import { CreateChannel } from "./create-channel";
 import { Voice } from "./voice";
 
 export function ServerSidebar({ id }: { id: Id<"servers"> }) {

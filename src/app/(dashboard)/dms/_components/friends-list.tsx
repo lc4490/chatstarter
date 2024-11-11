@@ -12,14 +12,6 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-const useTestUsers = () => {
-  const user = useQuery(api.functions.user.get);
-  if (!user) {
-    return [];
-  }
-  return [user, user, user];
-};
-
 export function PendingFriendsList() {
   const friends = useQuery(api.functions.friend.listPending);
   const updateStatus = useMutation(api.functions.friend.updateStatus);
