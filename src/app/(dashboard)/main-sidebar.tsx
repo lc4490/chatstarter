@@ -11,9 +11,9 @@ import { UserIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CreateServer } from "./create-server";
-import { api } from "../../../convex/_generated/api";
-import { useQuery } from "convex/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { api } from "../../../convex/_generated/api";
+// import { useQuery } from "convex/react";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function MainSidebar() {
   // const servers = useQuery(api.functions.server.list);
