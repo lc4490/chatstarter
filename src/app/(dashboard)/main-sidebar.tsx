@@ -11,12 +11,12 @@ import { UserIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CreateServer } from "./create-server";
-// import { api } from "../../../convex/_generated/api";
-// import { useQuery } from "convex/react";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { api } from "../../../convex/_generated/api";
+import { useQuery } from "convex/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function MainSidebar() {
-  // const servers = useQuery(api.functions.server.list);
+  const servers = useQuery(api.functions.server.list);
   const pathname = usePathname();
   return (
     <Sidebar collapsible="icon">
@@ -35,7 +35,7 @@ export function MainSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {/* {servers?.map((server) => (
+              {servers?.map((server) => (
                 <SidebarMenuItem key={server._id}>
                   <SidebarMenuButton
                     className="group-data-[collapsible=icon]:!p-0"
@@ -51,7 +51,7 @@ export function MainSidebar() {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))} */}
+              ))}
               <SidebarMenuItem>
                 <CreateServer />
               </SidebarMenuItem>
