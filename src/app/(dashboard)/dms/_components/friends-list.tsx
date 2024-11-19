@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { create } from "domain";
 import { toast } from "sonner";
 
 export function PendingFriendsList() {
