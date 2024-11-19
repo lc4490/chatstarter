@@ -9,8 +9,8 @@ const getInvite = async (ctx: QueryCtx, inviteId: Id<"invites">) => {
     throw new Error("Invite not found");
   } else if (invite.expiresAt && Date.now() > invite.expiresAt) {
     throw new Error("Invite expired");
-  } else if (invite.maxUses && invite.uses >= invite.maxUses) {
-    throw new Error("INvite has been used too many times");
+  } else if (invite.maxUses && invite.uses > invite.maxUses) {
+    throw new Error("Invite has been used too many times");
   }
   return invite;
 };

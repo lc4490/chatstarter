@@ -90,7 +90,7 @@ export function CreateServer() {
             </div>
           </div>
           <DialogFooter>
-            <Button>Create Server</Button>
+            <Button disabled={imageUpload.isUploading}>Create Server</Button>
           </DialogFooter>
         </form>
       </DialogContent>

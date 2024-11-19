@@ -58,6 +58,30 @@ export const members = authenticatedQuery({
   },
 });
 
+export const removeServerMember = authenticatedMutation({
+  args: {
+    serverId: v.id("servers"),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, { serverId, userId }) => {
+    const server = await ctx.db.get(serverId);
+    const serverMember = await ctx.db
+      .query("serverMembers")
+      .withIndex("by_serverId_userId", (q) =>
+        q.eq("serverId", serverId).eq("userId", userId)
+      )
+      .unique();
+    if (!server) {
+      throw new Error("Server not found");
+    } else if (server.ownerId !== ctx.user._id) {
+      throw new Error("You are not the owner of this server");
+    } else if (!serverMember) {
+      throw new Error("Member is not a part of this server");
+    }
+    await ctx.db.delete(serverMember._id);
+  },
+});
+
 export const create = authenticatedMutation({
   args: {
     name: v.string(),
