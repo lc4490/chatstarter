@@ -1,9 +1,11 @@
 import { v } from "convex/values";
 import {
   assertServerMember,
+  assertServerOwner,
   authenticatedMutation,
   authenticatedQuery,
 } from "./helpers";
+import { HMR_ACTIONS_SENT_TO_BROWSER } from "next/dist/server/dev/hot-reloader-types";
 
 export const list = authenticatedQuery({
   handler: async (ctx) => {
@@ -143,5 +145,42 @@ export const remove = authenticatedMutation({
     console.log("channels deleted");
 
     await ctx.db.delete(id);
+  },
+});
+
+export const isOwner = authenticatedQuery({
+  args: {
+    id: v.id("servers"),
+  },
+  handler: async (ctx, { id }) => {
+    try {
+      const result = await assertServerOwner(ctx, id);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+});
+
+export const leave = authenticatedMutation({
+  args: {
+    id: v.id("servers"),
+  },
+  handler: async (ctx, { id }) => {
+    const server = await ctx.db.get(id);
+    const serverMember = await ctx.db
+      .query("serverMembers")
+      .withIndex("by_serverId_userId", (q) =>
+        q.eq("serverId", id).eq("userId", ctx.user._id)
+      )
+      .unique();
+    if (!server) {
+      throw new Error("Server not found");
+    } else if (server.ownerId === ctx.user._id) {
+      throw new Error("The owner of the server cannot leave");
+    } else if (!serverMember) {
+      throw new Error("Member is not a part of this server");
+    }
+    await ctx.db.delete(serverMember._id);
   },
 });

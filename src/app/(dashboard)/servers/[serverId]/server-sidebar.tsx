@@ -35,6 +35,21 @@ export function ServerSidebar({ id }: { id: Id<"servers"> }) {
   const removeChannel = useMutation(api.functions.channels.remove);
   const removeServer = useMutation(api.functions.server.remove);
   const router = useRouter();
+  const isOwner = useQuery(api.functions.server.isOwner, { id: id });
+  const leaveServer = useMutation(api.functions.server.leave);
+
+  const handleLeaveServer = async (id: Id<"servers">) => {
+    try {
+      router.push("/dms/");
+      await leaveServer({ id });
+      toast.success("Left Server");
+    } catch (error) {
+      toast.error("Failed to leave server", {
+        description:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      });
+    }
+  };
 
   const handleServerDelete = async (id: Id<"servers">) => {
     try {
@@ -81,10 +96,10 @@ export function ServerSidebar({ id }: { id: Id<"servers"> }) {
                 variant="outline"
                 className="flex items-center"
                 onClick={() => {
-                  handleServerDelete(id);
+                  isOwner ? handleServerDelete(id) : handleLeaveServer(id);
                 }}
               >
-                Delete Server
+                {isOwner ? "Delete Server" : "Leave Server"}
               </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
