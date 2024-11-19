@@ -1,10 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "convex/react";
-import { CrownIcon, EllipsisVertical } from "lucide-react";
-import { api } from "../../../../../convex/_generated/api";
-import { Id } from "../../../../../convex/_generated/dataModel";
-import { CreateInvite } from "./create-invite";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -13,8 +8,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@radix-ui/react-dropdown-menu";
-import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "convex/react";
+import { CrownIcon, EllipsisVertical } from "lucide-react";
 import { toast } from "sonner";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import { CreateInvite } from "./create-invite";
 
 export function ServerMembers({ id }: { id: Id<"servers"> }) {
   const members = useQuery(api.functions.server.members, { id });
