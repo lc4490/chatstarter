@@ -107,3 +107,41 @@ export const create = authenticatedMutation({
     return { serverId, defaultChannelId };
   },
 });
+
+export const remove = authenticatedMutation({
+  args: {
+    id: v.id("servers"),
+  },
+  handler: async (ctx, { id }) => {
+    const server = await ctx.db.get(id);
+    const channels = await ctx.db
+      .query("channels")
+      .withIndex("by_serverId", (q) => q.eq("serverId", id))
+      .collect();
+
+    const members = await ctx.db
+      .query("serverMembers")
+      .withIndex("by_serverId", (q) => q.eq("serverId", id))
+      .collect();
+
+    if (!server) {
+      throw new Error("Server not found");
+    } else if (server.ownerId !== ctx.user._id) {
+      throw new Error("You are not the owner of this server");
+    }
+    await Promise.all(
+      members.map(async (member) => {
+        await ctx.db.delete(member._id);
+      })
+    );
+    console.log("users deleted");
+    await Promise.all(
+      channels.map(async (channel) => {
+        await ctx.db.delete(channel._id);
+      })
+    );
+    console.log("channels deleted");
+
+    await ctx.db.delete(id);
+  },
+});

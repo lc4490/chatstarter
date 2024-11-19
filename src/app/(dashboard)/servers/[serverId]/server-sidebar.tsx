@@ -1,3 +1,10 @@
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +19,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useMutation, useQuery } from "convex/react";
-import { TrashIcon } from "lucide-react";
+import { EllipsisVertical, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -26,7 +33,23 @@ export function ServerSidebar({ id }: { id: Id<"servers"> }) {
   const server = useQuery(api.functions.server.get, { id: id });
   const channels = useQuery(api.functions.channels.list, { id: id });
   const removeChannel = useMutation(api.functions.channels.remove);
+  const removeServer = useMutation(api.functions.server.remove);
   const router = useRouter();
+
+  const handleServerDelete = async (id: Id<"servers">) => {
+    try {
+      // Run both actions concurrently
+      await Promise.all([router.push("/dms/"), removeServer({ id })]);
+
+      // Notify the user after the mutation
+      toast.success("Server Deleted");
+    } catch (error) {
+      toast.error("Failed to delete server", {
+        description:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      });
+    }
+  };
 
   const handleChannelDelete = async (id: Id<"channels">) => {
     try {
@@ -46,7 +69,27 @@ export function ServerSidebar({ id }: { id: Id<"servers"> }) {
   };
   return (
     <Sidebar className="left-12">
-      <SidebarHeader>{server?.name}</SidebarHeader>
+      <SidebarHeader className="flex flex-row justify-between">
+        {server?.name}
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical className="text-muted-foreground" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="flex justify-center items-center">
+            <DropdownMenuItem asChild>
+              <Button
+                variant="outline"
+                className="flex items-center"
+                onClick={() => {
+                  handleServerDelete(id);
+                }}
+              >
+                Delete Server
+              </Button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Channels</SidebarGroupLabel>
