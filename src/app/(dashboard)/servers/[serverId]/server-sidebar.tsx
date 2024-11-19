@@ -96,7 +96,11 @@ export function ServerSidebar({ id }: { id: Id<"servers"> }) {
                 variant="outline"
                 className="flex items-center"
                 onClick={() => {
-                  isOwner ? handleServerDelete(id) : handleLeaveServer(id);
+                  if (isOwner) {
+                    handleServerDelete(id);
+                  } else {
+                    handleLeaveServer(id);
+                  }
                 }}
               >
                 {isOwner ? "Delete Server" : "Leave Server"}
