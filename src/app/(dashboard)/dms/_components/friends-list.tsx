@@ -11,6 +11,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { create } from "domain";
+import { toast } from "sonner";
 
 export function PendingFriendsList() {
   const friends = useQuery(api.functions.friend.listPending);
@@ -55,6 +58,22 @@ export function PendingFriendsList() {
 export function AcceptedFriendsList() {
   const friends = useQuery(api.functions.friend.listAccepted);
   const updateStatus = useMutation(api.functions.friend.updateStatus);
+  const createDirectMessage = useMutation(api.functions.dm.create);
+  const router = useRouter();
+
+  const handleCreateDM = async (username: string) => {
+    try {
+      const id = await createDirectMessage({
+        username: username,
+      });
+      router.push(`/dms/${id}`);
+    } catch (error) {
+      toast.error("Failed to create direct message", {
+        description:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col divide-y">
@@ -74,7 +93,9 @@ export function AcceptedFriendsList() {
             title="Start DM"
             icon={<MessageCircleIcon />}
             className="bg-blue-100"
-            onClick={() => {}}
+            onClick={() => {
+              handleCreateDM(friend.user.username);
+            }}
           />
           <IconButton
             title="Remove Friend"
